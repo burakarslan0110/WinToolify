@@ -1,7 +1,8 @@
 # WinToolify
-
+![WinToolify](https://github.com/user-attachments/assets/7c1742bc-6f72-459c-8e26-e5d312ba39a3)
+[TURKISH README](https://github.com/burakarslan0110/WinToolify/blob/main/README.md)
 ## Overview
-WinToolify is a Windows System Optimization Tool designed to enhance system performance, manage services, configure privacy settings, and remove unnecessary applications. Developed by Burak Arslan, this tool provides a comprehensive suite of utilities to keep your Windows system running smoothly.
+WinToolify is a PowerShell script designed to enhance system performance, manage services, configure privacy settings, and remove unnecessary applications. This tool offers various feature packages to keep your system running smoothly.
 
 ## WinToolify Menu Options
 
