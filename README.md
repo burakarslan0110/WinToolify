@@ -59,7 +59,8 @@ WinToolify, sistem performansını artırmak, hizmetleri yönetmek, gizlilik aya
 
 ## Kurulum ve Kullanım
 - PowerShell'i yönetici olarak açın.
-- Şu kodu çalıştırın: `iex (iwr "https://raw.githubusercontent.com/burakarslan0110/WinToolify/main/WinToolify.ps1" -UseBasicP)`
+- Şu kodu çalıştırın:
+- `iex (iwr "https://raw.githubusercontent.com/burakarslan0110/WinToolify/main/WinToolify.ps1" -UseBasicP)`
 
 ## Lisans
 Bu proje MIT Lisansı altında lisanslanmıştır - ayrıntılar için [LICENSE](LICENSE) dosyasına bakın. 
