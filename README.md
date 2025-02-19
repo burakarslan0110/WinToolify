@@ -3,7 +3,7 @@
 
 [ENGLISH README](https://github.com/burakarslan0110/WinToolify/blob/main/README-EN.md)
 ## Genel Bakış
-WinToolify, sistem performansını artırmak, hizmetleri yönetmek, gizlilik ayarlarını yapılandırmak ve gereksiz uygulamaları kaldırmak için tasarlanmış bir Windows Sistem Optimizasyon Aracıdır. Burak A. tarafından geliştirilen bu araç, Windows sisteminizi sorunsuz çalışır durumda tutmak için kapsamlı bir yardımcı programlar paketi sunar.
+WinToolify, sistem performansını artırmak, hizmetleri yönetmek, gizlilik ayarlarını yapılandırmak ve gereksiz uygulamaları kaldırmak için tasarlanmış bir Windows sistem optimizasyon aracıdır. Sisteminizi sorunsuz çalışır durumda tutmak için kapsamlı bir yardımcı programlar paketi sunar.
 
 ## Menü Seçenekleri
 
