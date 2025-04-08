@@ -1,5 +1,5 @@
 # WinToolify
-![WinToolify](https://github.com/user-attachments/assets/7c1742bc-6f72-459c-8e26-e5d312ba39a3)
+![Ekran görüntüsü 2025-04-08 195025](https://github.com/user-attachments/assets/ebf8d093-a2a7-405c-95b6-bbbc3f6222a5)
 [TURKISH README](https://github.com/burakarslan0110/WinToolify/blob/main/README.md)
 ## Overview
 WinToolify is a PowerShell script designed to enhance system performance, manage services, configure privacy settings, and remove unnecessary applications. This tool offers various feature packages to keep your system running smoothly.
@@ -12,6 +12,7 @@ WinToolify is a PowerShell script designed to enhance system performance, manage
 - **Privacy Settings**: Adjust privacy settings to protect your data.
 - **Bloatware Removal**: Identify and remove unnecessary pre-installed applications.
 - **Install VCRedist Packages**: Install Visual C++ Redistributable packages.
+- **Create Backup File**: You can create a backup file.
 - **Language Settings**: Change the language of the application.
 - **Exit**: Close the application.
 
@@ -58,6 +59,12 @@ WinToolify is a PowerShell script designed to enhance system performance, manage
 - **List Installed Printers**: List all installed printers.
 - **List Opening Ports**: Display currently open network ports.
 - **Return to Basic Tools Menu**: Go back to the basic tools menu.
+
+### Create Backup File Menu
+- **Create Backup File**: Desktop, documents, pictures and videos are copied to the backup file created on the desktop. 
+In addition, separate Txt files are created for installed updates, license key and installed programs.
+- **Install Programs**: Reads the content of the InstalledPrograms.txt file created in the backup file.
+In this way, you can reinstall your same programs after the format with the backup you are formed before the format.
 
 ## Installation & Usage
 - Open PowerShell as an administrator.
