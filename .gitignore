@@ -1,0 +1,6 @@
+# Build output. dist/WinToolify.ps1 is generated from src/ by build.cmd and
+# rebuilt by CI on every run, so it is never committed: the release asset is
+# the only place a user downloads it from.
+dist/
+
+scripts/
