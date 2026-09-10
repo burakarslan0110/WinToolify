@@ -1,0 +1,14 @@
+# The workflows pin every action to a commit SHA, which never moves on its
+# own. Dependabot opens the PR that moves it - against v2-dev, since main
+# takes changes only through a pull request.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: v2-dev
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+    labels:
+      - dependencies

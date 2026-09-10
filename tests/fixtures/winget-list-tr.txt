@@ -1,0 +1,8 @@
+Ad                        Kimlik                     Sürüm     Kullanılabilir  Kaynak
+-------------------------------------------------------------------------------------
+7-Zip 23.01 (x64)         7zip.7zip                  23.01     24.09           winget
+Mozilla Firefox (x64 tr)  Mozilla.Firefox            129.0     130.0           winget
+Git                       Git.Git                    2.46.0                    winget
+Eski Kurulum Programı     ARPKayit12345              1.0.0
+
+3 paket için yükseltme kullanılabilir.
