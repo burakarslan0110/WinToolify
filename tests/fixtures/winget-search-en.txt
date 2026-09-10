@@ -1,0 +1,8 @@
+   -
+   \
+   |
+Name              Id                    Version  Match           Source
+-----------------------------------------------------------------------
+VLC media player  VideoLAN.VLC          3.0.21                   winget
+StreamFX for OBS  Xaymar.StreamFX       0.12.0   Tag: obs        winget
+OBS Studio        OBSProject.OBSStudio  30.2.3   Moniker: obs    winget

@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2025 Burak Arslan
+Copyright (c) 2025-2026 Burak Arslan
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,9 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+The Visual C++ redistributable installers under Visual-C-Runtimes-WinToolify/
+are Microsoft binaries, redistributed unmodified under Microsoft's own
+redistribution terms. They are not covered by the MIT license above.
