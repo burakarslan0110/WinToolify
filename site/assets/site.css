@@ -1,0 +1,1192 @@
+/* WinToolify site styles.
+   One stylesheet for both language pages. The terminal palette is not a
+   design choice: it is the Campbell scheme Windows Terminal renders the
+   console colours WinToolify writes (SGR 96 cyan, 93 yellow, 46 DarkCyan
+   background), so the frames on this page are the colours of the real app. */
+
+:root {
+  color-scheme: dark;
+
+  /* The page sits a little above pure black so it reads as a surface rather
+     than a void, and so the console black of the terminals is the darkest
+     thing on it - the frames look like windows lying on the page. */
+  --bg: #0e1014;
+  --bg-1: #151820;
+  --bg-2: #1c202a;
+  --term-bg: #0c0c0c;
+
+  --ink: #f2f4f7;
+  --ink-2: #a5aeb8;
+  --ink-3: #838c95;
+
+  --line: rgb(255 255 255 / 8%);
+  --line-2: rgb(255 255 255 / 14%);
+
+  --accent: #61d6d6;
+  --accent-soft: rgb(97 214 214 / 12%);
+
+  /* Campbell, the Windows Terminal default scheme. One deviation: Campbell's
+     bright black is #767676, which lands at 4.3:1 on the console background
+     and misses WCAG AA. #808080 clears 4.9:1 and is indistinguishable at
+     reading size. */
+  --t-c: #61d6d6;
+  --t-y: #f9f1a5;
+  --t-g: #16c60c;
+  --t-r: #e74856;
+  --t-w: #f2f2f2;
+  --t-gr: #cccccc;
+  --t-d: #808080;
+  --t-sel-bg: #3a96dd;
+  --t-sel-fg: #0c0c0c;
+
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display",
+    "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: "Cascadia Mono", "Cascadia Code", Consolas, "JetBrains Mono",
+    ui-monospace, SFMono-Regular, Menlo, "DejaVu Sans Mono", monospace;
+
+  --shell: 1120px;
+  --gutter: clamp(20px, 5vw, 48px);
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* The header is sticky, so anything scrolled to - an anchor from the nav, or
+     a control the keyboard just moved focus to - would otherwise arrive under
+     it. WCAG 2.2 asks that focus stay visible (Focus Not Obscured). */
+  scroll-padding-top: 76px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 17px/1.65 var(--sans);
+  letter-spacing: -0.011em;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -0.028em; line-height: 1.1; }
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+
+.shell { width: min(100% - var(--gutter) * 2, var(--shell)); margin-inline: auto; }
+
+.skip {
+  position: absolute;
+  left: -9999px;
+  top: 8px;
+  z-index: 100;
+  padding: 10px 16px;
+  background: var(--bg-2);
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+}
+.skip:focus { left: 16px; }
+
+.sr {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------- header --- */
+
+/* A wash of the terminal cyan behind the top of the page, so the first screen
+   has some air in it instead of reading as flat black. */
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 900px;
+  background: radial-gradient(58% 62% at 50% -10%, rgb(97 214 214 / 7%), transparent 68%);
+  pointer-events: none;
+}
+
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgb(14 16 20 / 74%);
+  backdrop-filter: saturate(160%) blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s var(--ease), background 0.3s var(--ease);
+}
+.top.is-stuck { border-bottom-color: var(--line); }
+
+.top__in {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 56px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+.brand:hover { text-decoration: none; }
+.brand img { width: 22px; height: 22px; border-radius: 5px; }
+
+.top__spacer { flex: 1; }
+
+.top__nav {
+  display: flex;
+  gap: 4px;
+}
+.top__nav a {
+  padding: 6px 10px;
+  border-radius: 7px;
+  color: var(--ink-2);
+  font-size: 14px;
+  transition: color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.top__nav a:hover { color: var(--ink); background: var(--bg-2); text-decoration: none; }
+
+.top__gh {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  color: var(--ink-2);
+  transition: color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.top__gh svg { width: 18px; height: 18px; }
+.top__gh:hover { color: var(--ink); background: var(--bg-2); }
+
+.lang {
+  display: inline-flex;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.lang a, .lang span {
+  padding: 4px 9px;
+  border-radius: 6px;
+  color: var(--ink-3);
+}
+.lang a:hover { color: var(--ink); text-decoration: none; }
+.lang [aria-current="true"] { background: var(--bg-2); color: var(--ink); }
+
+/* --------------------------------------------------------------- hero --- */
+
+.hero { position: relative; padding: clamp(56px, 11vh, 104px) 0 0; }
+
+.hero > .shell { text-align: center; }
+
+/* What it runs on, under the description rather than above the name. */
+.specs {
+  margin-top: 28px;
+  color: var(--ink-3);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.specs span { padding: 0 6px; color: var(--accent); }
+
+/* The mark fades up ahead of the name being typed under it. */
+.hero__logo {
+  display: block;
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 28px;
+  border-radius: 18px;
+}
+[data-js] .hero__logo { animation: logoIn 1.5s var(--ease) both; }
+@keyframes logoIn {
+  from { opacity: 0; transform: translateY(-10px) scale(0.92); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* The name leads, set in the console's own font and cycling through the
+   console's own colours, with the block caret the app blinks. */
+.hero h1.wordmark {
+  margin: 0 auto;
+  font: 600 clamp(2.7rem, 7.6vw, 5rem)/1 var(--mono);
+  letter-spacing: -0.02em;
+  color: var(--t-c);
+  animation: wordmark 7s var(--ease) infinite;
+}
+
+/* The claim under it, in the page's own voice rather than the terminal's. */
+.hero__claim {
+  max-width: 26ch;
+  margin: 22px auto 0;
+  color: var(--ink);
+  font-size: clamp(1.3rem, 3.3vw, 2.1rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+@keyframes wordmark {
+  0%, 100% { color: #61d6d6; text-shadow: 0 0 22px rgb(97 214 214 / 22%); }
+  38%      { color: #a6efef; text-shadow: 0 0 26px rgb(97 214 214 / 34%); }
+  62%      { color: #f2f2f2; text-shadow: 0 0 30px rgb(97 214 214 / 26%); }
+}
+
+.caret {
+  display: inline-block;
+  width: 0.44em;
+  height: 0.86em;
+  margin-left: 0.1em;
+  background: currentColor;
+  vertical-align: -0.06em;
+  animation: caret 1.1s steps(1) infinite;
+}
+@keyframes caret { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
+
+.hero__deck {
+  max-width: 62ch;
+  margin: 28px auto 0;
+  color: var(--ink-2);
+  font-size: clamp(1.05rem, 2vw, 1.28rem);
+  line-height: 1.55;
+}
+
+.hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 36px;
+}
+
+.cmd {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+  padding: 4px 4px 4px 16px;
+  border: 1px solid var(--line-2);
+  border-radius: 11px;
+  background: var(--bg-1);
+}
+.cmd code {
+  overflow-x: auto;
+  font: 400 13.5px/1.9 var(--mono);
+  color: var(--ink);
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+.cmd code::-webkit-scrollbar { display: none; }
+.cmd code b { color: var(--accent); font-weight: 400; }
+
+.copy {
+  flex: none;
+  min-width: 44px;
+  height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--bg-2);
+  color: var(--ink-2);
+  font: 500 13px/1 var(--sans);
+  cursor: pointer;
+  transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+.copy:hover { background: #1d2128; color: var(--ink); }
+.copy.is-done { color: var(--t-g); }
+
+.ghost {
+  padding: 9px 16px;
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  color: var(--ink-2);
+  font-size: 14px;
+  font-weight: 500;
+}
+.ghost:hover { color: var(--ink); border-color: var(--ink-3); text-decoration: none; }
+
+.hero__note {
+  max-width: 58ch;
+  margin: 18px auto 0;
+  color: var(--ink-3);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+/* ----------------------------------------------------------- terminal --- */
+
+.term {
+  position: relative;
+  container-type: inline-size;
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  background: var(--term-bg);
+  overflow: hidden;
+}
+
+/* Windows chrome, not macOS: the title sits left and the three controls sit
+   right, the way every window on the OS this tool runs on is drawn. */
+.term__bar {
+  display: flex;
+  align-items: stretch;
+  min-height: 34px;
+  border-bottom: 1px solid rgb(255 255 255 / 7%);
+  background: #16181d;
+  color: var(--ink-3);
+  font-size: 12px;
+  letter-spacing: 0.01em;
+}
+.term__title {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding-left: 14px;
+  font-family: var(--mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.term__ctl { display: flex; margin-left: auto; }
+.wc {
+  position: relative;
+  width: 40px;
+  transition: background 0.15s var(--ease);
+}
+.wc::before, .wc::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: #98a1ab;
+}
+.wc--min::before { width: 10px; height: 1px; margin: 0 0 0 -5px; }
+.wc--max::before {
+  width: 9px; height: 9px;
+  margin: -5px 0 0 -5px;
+  background: none;
+  border: 1px solid #98a1ab;
+  border-radius: 1px;
+}
+.wc--close::before, .wc--close::after { width: 11px; height: 1px; margin: 0 0 0 -5.5px; }
+.wc--close::before { transform: rotate(45deg); }
+.wc--close::after { transform: rotate(-45deg); }
+
+/* Windows Terminal keeps its tabs in the title bar, so the tour's screens do
+   too: the window itself is how you move between them. */
+.term__tabs { display: flex; overflow-x: auto; scrollbar-width: none; }
+.term__tabs::-webkit-scrollbar { display: none; }
+
+.term__tab {
+  flex: none;
+  padding: 0 15px;
+  min-height: 34px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--ink-3);
+  font: 400 12px/1 var(--mono);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.2s var(--ease), background 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+.term__tab:hover { color: var(--ink); background: rgb(255 255 255 / 4%); }
+.term__tab[aria-current="true"] {
+  color: var(--ink);
+  background: var(--term-bg);
+  border-bottom-color: var(--accent);
+}
+
+.tour__hint {
+  margin-top: 14px;
+  color: var(--ink-3);
+  font-size: 13.5px;
+  text-align: center;
+}
+
+.term__scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 14px 16px 16px;
+  scrollbar-width: thin;
+  scrollbar-color: #2a2e35 transparent;
+}
+
+/* Every frame is exactly 91 columns wide, so the type size that makes one
+   fill its box is a plain function of the box: 91 columns times the 0.586em
+   advance of the console fonts, plus the scroller's padding. Below the floor
+   the frame stops shrinking and scrolls sideways instead, which stays legible
+   where scaling to fit would not. */
+/* The floor is low on purpose. A 91-column frame cannot be both readable and
+   whole on a phone, and a frame cut off at the right edge reads as broken
+   rather than as a terminal, so on a narrow screen it shrinks until the whole
+   window is there. The narration beside it carries the meaning at that size. */
+.term__body {
+  display: block;
+  width: 91ch;
+  margin: 0 auto;
+  font: 400 clamp(5.6px, calc((100cqw - 34px) / 53.32), 16px)/1.42 var(--mono);
+  letter-spacing: 0;
+  white-space: pre;
+  tab-size: 4;
+}
+
+/* One column, whatever the font does with the glyph. vertical-align: top is
+   load-bearing: an inline-block with clipped overflow takes its baseline from
+   its bottom edge, which grows the line box and would make a frame with three
+   bullets taller than the same frame without them. */
+.w1 {
+  display: inline-block;
+  width: 1ch;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.t-c  { color: var(--t-c); }
+.t-y  { color: var(--t-y); }
+.t-g  { color: var(--t-g); }
+.t-r  { color: var(--t-r); }
+.t-w  { color: var(--t-w); }
+.t-gr { color: var(--t-gr); }
+.t-d  { color: var(--t-d); }
+.t-sel { background: var(--t-sel-bg); color: var(--t-sel-fg); }
+
+.hero__term {
+  margin-top: clamp(44px, 8vh, 76px);
+
+}
+
+/* Every frame paints row by row, the way the console fills a screen. Hiding is
+   applied by script, so with JavaScript off the frames are simply there rather
+   than permanently invisible. --step sets the pace: slow enough in the hero to
+   watch, quick in the tour so a scene change does not hold you up. */
+.type-line { display: block; }
+[data-js] .is-armed .type-line { opacity: 0; }
+[data-js] .is-typed .type-line {
+  animation: typeIn 0.22s var(--ease) both;
+  animation-delay: calc(var(--i) * var(--step, 20ms));
+}
+@keyframes typeIn {
+  from { opacity: 0; transform: translateY(-2px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.hero__frames > [data-hero] { --step: 30ms; }
+.tour__frames > [role="tabpanel"] { --step: 15ms; }
+
+/* Under the window: which of the three screens the recording is on, and a way
+   to jump to one. It also says, without a caption, that this is running. */
+.hero__steps {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 18px;
+}
+.hero__step {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--ink-3);
+  font: 500 13px/1 var(--sans);
+  cursor: pointer;
+  transition: color 0.25s var(--ease), background 0.25s var(--ease);
+}
+.hero__step i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.45;
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+}
+.hero__step:hover { color: var(--ink-2); background: rgb(255 255 255 / 4%); }
+.hero__step[aria-current="true"] { color: var(--accent); background: var(--accent-soft); }
+.hero__step[aria-current="true"] i { opacity: 1; transform: scale(1.25); }
+/* Five names wrap to two lines on a phone, which is fine, but they should not
+   wrap four-and-one. */
+@media (max-width: 560px) {
+  .hero__steps { gap: 2px; }
+  .hero__step { gap: 6px; padding: 7px 10px; font-size: 12px; }
+}
+
+/* The hero window is 36 rows tall as well as 91 columns wide, so sizing it by
+   width alone can push it past the bottom of the screen. Take whichever of the
+   two limits is tighter and the whole window fits the screen it opened on:
+   36 rows at a 1.42 line box is 51.12em, plus the scroller padding and the
+   title bar. */
+.hero__term .term__body {
+  font-size: min(
+    clamp(5.6px, calc((100cqw - 34px) / 53.32), 16px),
+    max(5.6px, calc((100svh - 190px) / 51.12))
+  );
+}
+
+/* The hero terminal plays a short recording: the same seven frames stacked, one
+   shown at a time. The first paints row by row like a console filling up; the
+   rest redraw quickly, the way the app repaints when you move between screens. */
+.hero__frames { position: relative; }
+.hero__frames > [data-hero]:not(:first-child) { position: absolute; inset: 0; }
+.hero__frames > [data-hero] {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.16s var(--ease), visibility 0s 0.16s;
+}
+.hero__frames > [data-hero].is-on {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.16s var(--ease);
+}
+
+/* --------------------------------------------------------------- rule --- */
+
+.section { padding: clamp(72px, 13vh, 132px) 0; }
+.section--tight { padding-block: clamp(56px, 9vh, 92px); }
+
+.kicker {
+  margin-bottom: 14px;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.section h2 {
+  max-width: 20ch;
+  font-size: clamp(1.9rem, 4.2vw, 3rem);
+}
+
+.section__deck {
+  max-width: 60ch;
+  margin-top: 20px;
+  color: var(--ink-2);
+  font-size: clamp(1rem, 1.7vw, 1.15rem);
+}
+
+/* -------------------------------------------------------------- stats --- */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--line);
+  overflow: hidden;
+}
+.stats li {
+  padding: 26px 22px;
+  background: var(--bg);
+}
+.stats b {
+  display: block;
+  font-size: clamp(1.7rem, 3.4vw, 2.3rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.stats span {
+  display: block;
+  margin-top: 6px;
+  color: var(--ink-3);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+/* --------------------------------------------------------------- tour --- */
+
+.tour__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  gap: clamp(32px, 5vw, 72px);
+  margin-top: 56px;
+  align-items: start;
+}
+
+.tour__steps { display: grid; gap: 8px; }
+
+.tour__step {
+  display: block;
+  width: 100%;
+  padding: 22px 22px 22px 26px;
+  border: 0;
+  border-left: 2px solid var(--line-2);
+  border-radius: 0 10px 10px 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.35s var(--ease), background 0.35s var(--ease);
+}
+.tour__step:hover { background: rgb(255 255 255 / 2.5%); }
+.tour__step[aria-selected="true"] {
+  border-left-color: var(--accent);
+  background: rgb(255 255 255 / 3.5%);
+}
+
+.tour__n {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--ink-3);
+  font: 500 12px/1 var(--mono);
+  letter-spacing: 0.1em;
+  transition: color 0.35s var(--ease);
+}
+.tour__step[aria-selected="true"] .tour__n { color: var(--accent); }
+
+.tour__step h3 { font-size: 1.2rem; letter-spacing: -0.02em; }
+
+.tour__step p {
+  margin-top: 10px;
+  color: var(--ink-3);
+  font-size: 15px;
+  line-height: 1.6;
+  transition: color 0.35s var(--ease);
+}
+.tour__step[aria-selected="true"] p { color: var(--ink-2); }
+
+.tour__stage { position: sticky; top: 92px; }
+
+/* The five screens are stacked in one window. The outgoing one clears quickly
+   and the incoming one is painted row by row rather than cross-faded, so a tab
+   change reads as the screen redrawing. */
+.tour__frames { position: relative; }
+
+.tour__frames > [role="tabpanel"]:not(:first-child) {
+  position: absolute;
+  inset: 0;
+}
+.tour__frames > [role="tabpanel"] {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.18s var(--ease), visibility 0s 0.18s;
+}
+.tour__frames > [role="tabpanel"].is-on {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.18s var(--ease);
+}
+
+/* -------------------------------------------------------------- cards --- */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 14px;
+  margin-top: 52px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--bg-1);
+  transition: border-color 0.3s var(--ease), background 0.3s var(--ease);
+}
+.card:hover { border-color: var(--line-2); background: var(--bg-2); }
+
+
+.card__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px dashed var(--line);
+}
+
+.card__label {
+  font: 400 14px/1.4 var(--mono);
+  color: var(--t-c);
+  letter-spacing: -0.01em;
+}
+.card__label i { font-style: normal; color: var(--ink-3); }
+
+.card__count {
+  flex: none;
+  color: var(--ink-3);
+  font: 400 12px/1.4 var(--mono);
+  white-space: nowrap;
+}
+
+.card p { color: var(--ink-2); font-size: 14.5px; line-height: 1.62; }
+
+/* -------------------------------------------------------------- steps --- */
+
+.flow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+  gap: 14px;
+  margin-top: 52px;
+}
+
+.flow li {
+  position: relative;
+  padding: 24px 22px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--bg-1);
+}
+.flow li::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -11px;
+  width: 8px; height: 8px;
+  border-top: 1px solid var(--line-2);
+  border-right: 1px solid var(--line-2);
+  transform: translateY(-50%) rotate(45deg);
+}
+.flow li:last-child::after { display: none; }
+
+.flow b {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--accent);
+  font: 500 12px/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.flow h3 { margin-bottom: 8px; font-size: 1.05rem; }
+.flow p { color: var(--ink-3); font-size: 14px; line-height: 1.6; }
+
+.notes {
+  display: grid;
+  gap: 2px;
+  margin-top: 40px;
+  border-top: 1px solid var(--line);
+}
+.notes li {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 14px;
+  padding: 16px 2px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-2);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.notes svg { margin-top: 4px; width: 16px; height: 16px; color: var(--accent); }
+.notes code {
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: var(--bg-2);
+  font: 400 0.86em/1 var(--mono);
+  color: var(--ink);
+}
+.notes .r { color: var(--t-r); }
+.notes .y { color: var(--t-y); }
+.notes .g { color: var(--t-g); }
+
+.gate__frame { margin-top: 44px; }
+.gate__cap {
+  margin-top: 14px;
+  color: var(--ink-3);
+  font-size: 14px;
+}
+
+/* ------------------------------------------------------------- harness --- */
+
+.harness__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
+  gap: clamp(28px, 5vw, 64px);
+  align-items: center;
+}
+
+/* The arrangement drawn once: the assistant reads the machine, hands back a
+   numbered card, and you are the one who applies it. The three edges light in
+   turn, so the direction of travel is the thing that moves. */
+.loop { margin: 0; }
+.loop svg { display: block; width: 100%; height: auto; }
+
+.loop__base { stroke: rgb(255 255 255 / 12%); stroke-width: 2; }
+/* One light goes round, not three. The dash pattern is three times the length
+   an edge needs (100 units of path plus the 18-unit dash), so the pulse is on
+   its edge for exactly a third of the cycle and off it for the rest. The three
+   edges run the same animation a third apart, which hands the light from one
+   to the next without it ever restarting or doubling up. */
+.loop__flow {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  stroke-dasharray: 18 336;
+  stroke-dashoffset: 0;
+  filter: drop-shadow(0 0 5px rgb(97 214 214 / 55%));
+  animation: loopFlow 3.6s linear infinite;
+  animation-delay: var(--t);
+}
+@keyframes loopFlow { to { stroke-dashoffset: -354; } }
+
+/* The nodes light in turn by animating `color`, which both the strokes and the
+   spark read through currentColor, so one keyframe list drives all of them. */
+.loop__node {
+  color: rgb(255 255 255 / 42%);
+  animation: loopNode 3.6s var(--ease) infinite;
+  animation-delay: var(--t);
+}
+.loop__node rect,
+.loop__node path { stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.loop__node rect { fill: rgb(97 214 214 / 5%); }
+.loop__node .spark { stroke: none; fill: currentColor; }
+
+/* A node lights as the pulse lands on it, at the top of its own cycle. The
+   accent is written out rather than referenced: a var() inside a keyframe
+   makes Chrome drop the whole rule, which leaves the nodes unanimated. */
+@keyframes loopNode {
+  0%    { color: #61d6d6; }
+  30%   { color: rgb(255 255 255 / 42%); }
+  84%   { color: rgb(255 255 255 / 42%); }
+  100%  { color: #61d6d6; }
+}
+
+.loop__tag {
+  fill: var(--ink-3);
+  font: 400 11px var(--mono);
+  letter-spacing: 0.02em;
+}
+
+.harness__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 64px);
+  margin-top: 52px;
+  align-items: stretch;
+}
+/* The claims spread to end level with the tool list beside them, so the two
+   columns finish together instead of one trailing off. */
+.harness__claims {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.tools__head {
+  margin-bottom: 14px;
+  color: var(--accent);
+  font: 500 12px/1.4 var(--sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tools { border-top: 1px solid var(--line); }
+.tools li {
+  display: grid;
+  gap: 5px;
+  padding: 15px 2px;
+  border-bottom: 1px solid var(--line);
+}
+.tools b {
+  font: 400 14px/1.4 var(--mono);
+  color: var(--t-c);
+  font-weight: 400;
+}
+.tools span { color: var(--ink-3); font-size: 14px; line-height: 1.55; }
+
+.pill {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: 5px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font: 500 11px/1.6 var(--sans);
+  letter-spacing: 0.02em;
+  vertical-align: 1px;
+}
+
+.claim {
+  padding: 21px 24px;
+  border: 1px solid var(--line-2);
+  border-radius: 13px;
+  background: var(--bg-1);
+  color: var(--ink-2);
+  font-size: 15.5px;
+  line-height: 1.65;
+}
+.claim h3 { margin-bottom: 8px; color: var(--ink); font-size: 1.05rem; }
+.claim code {
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: var(--bg-2);
+  font: 400 0.86em/1 var(--mono);
+  color: var(--ink);
+}
+
+.harness__term { margin-top: 44px; }
+
+/* --------------------------------------------------------------- start --- */
+
+/* Six equal blocks rather than two stacks of uneven length, so no column ends
+   halfway up the section with nothing under it. */
+/* One block per row, each with its explanation beside its command, rather than
+   three narrow columns that squeeze both. */
+.start {
+  display: grid;
+  gap: 12px;
+  margin-top: 52px;
+}
+.start__block {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(20px, 3vw, 40px);
+  align-items: center;
+  padding: 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--bg-1);
+}
+.start h3 { margin-bottom: 10px; font-size: 1.05rem; }
+.start p { color: var(--ink-2); font-size: 15px; line-height: 1.62; }
+
+/* The requirements have no command beside them, so all five sit side by side
+   across the row, each stacked label over value, rather than running down the
+   page as a list. */
+.start__block--wide { display: block; }
+.start__block--wide .req {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+  gap: 22px 26px;
+  margin-top: 18px;
+  border-top: 0;
+}
+.start__block--wide .req li {
+  display: block;
+  padding: 0;
+  border-bottom: 0;
+  border-left: 1px solid var(--line);
+  padding-left: 16px;
+}
+.start__block--wide .req b {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--accent);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.start__block--wide .req span { display: block; line-height: 1.5; }
+
+.snippet { position: relative; }
+.start__block pre.code { background: var(--bg); padding-right: 84px; }
+
+.copy--sm {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  height: 28px;
+  min-width: 44px;
+  padding: 0 10px;
+  background: var(--bg-2);
+  font: 500 11px/1 var(--mono);
+  letter-spacing: 0.04em;
+}
+/* A command longer than its box scrolls under the button, so the last stretch
+   of it fades out instead of being chopped off mid-character. */
+.copy--sm::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  bottom: -7px;
+  left: -26px;
+  width: 26px;
+  background: linear-gradient(to right, rgb(14 16 20 / 0%), var(--bg));
+  pointer-events: none;
+}
+
+pre.code {
+  margin: 0;
+  padding: 15px 17px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-1);
+  overflow-x: auto;
+  font: 400 13px/1.75 var(--mono);
+  color: var(--ink);
+}
+
+/* A long command scrolls rather than wrapping, so the scrollbar is always
+   there. Keep it out of the way instead of letting it read as a UI control. */
+.term__scroll::-webkit-scrollbar,
+pre.code::-webkit-scrollbar { height: 8px; }
+.term__scroll::-webkit-scrollbar-track,
+pre.code::-webkit-scrollbar-track { background: transparent; }
+.term__scroll::-webkit-scrollbar-thumb,
+pre.code::-webkit-scrollbar-thumb { background: #2a2e35; border-radius: 4px; }
+.term__scroll::-webkit-scrollbar-thumb:hover,
+pre.code::-webkit-scrollbar-thumb:hover { background: #3a4049; }
+
+pre.code {
+  scrollbar-width: thin;
+  scrollbar-color: #2a2e35 transparent;
+}
+pre.code .t-d { color: var(--ink-3); }
+
+.req { margin-top: 4px; border-top: 1px solid var(--line); }
+.req li {
+  display: grid;
+  grid-template-columns: minmax(0, 150px) minmax(0, 1fr);
+  gap: 16px;
+  padding: 13px 2px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14.5px;
+}
+.req dt, .req b { color: var(--ink-3); font-weight: 400; }
+.req span { color: var(--ink-2); }
+
+/* -------------------------------------------------------------- footer --- */
+
+/* The colophon: who made it, in one short centred block above the licence. */
+.maker {
+  padding-bottom: 40px;
+  text-align: center;
+}
+.maker__photo {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+}
+.maker__name {
+  margin-top: 16px;
+  color: var(--ink);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.maker__role {
+  max-width: 56ch;
+  margin: 8px auto 0;
+  color: var(--ink-3);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.maker__links {
+  display: flex;
+  justify-content: center;
+  gap: 8px 20px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  font-size: 14px;
+}
+.maker__links a { padding-block: 4px; }
+
+.foot {
+  padding: 48px 0 64px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-3);
+  font-size: 14px;
+}
+.foot__in {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 32px;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+.foot nav { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+/* At 14px these links measure 23px tall, a pixel under the 24px WCAG 2.5.8
+   asks of a target. The padding buys the pixel. */
+.foot nav a { padding-block: 4px; }
+.foot a { color: var(--ink-2); }
+.foot a:hover { color: var(--ink); }
+
+/* ------------------------------------------------------------- reveals --- */
+
+[data-js] .reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+}
+[data-js] .reveal.is-in { opacity: 1; transform: none; }
+.reveal.is-in .stagger > * { animation: rise 0.45s var(--ease) both; }
+.stagger > * { animation-delay: calc(var(--i, 0) * 55ms); }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---------------------------------------------------------- responsive --- */
+
+@media (max-width: 940px) {
+  .tour__layout, .harness__grid, .harness__head { grid-template-columns: minmax(0, 1fr); }
+  .start__block { grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: stretch; }
+  .harness__claims { justify-content: flex-start; }
+  .loop { max-width: 340px; margin-inline: auto; }
+
+  /* In one column the frame moves above the steps and stays pinned there, so
+     the picture and the paragraph explaining it are on screen together. */
+  .tour__stage {
+    order: -1;
+    top: 60px;
+    z-index: 1;
+    padding-bottom: 18px;
+    background: var(--bg);
+    box-shadow: 0 10px 18px -12px rgb(0 0 0 / 90%);
+  }
+  .tour__steps { padding-top: 4px; }
+  .tour__hint { margin-top: 10px; }
+
+  .top__nav { display: none; }
+  .flow li::after { display: none; }
+}
+
+@media (max-width: 560px) {
+  body { font-size: 16px; }
+
+  /* Two full section paddings meeting on a phone leave a gap the size of half
+     the screen; on this width they only need to read as a break. */
+  .section { padding-block: 64px; }
+  .section--tight { padding-block: 48px; }
+
+  .term__scroll { padding: 10px 12px 12px; }
+  .req li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  [data-js] .reveal { opacity: 1; transform: none; }
+  [data-js] .is-armed .type-line { opacity: 1; }
+  .loop__flow { opacity: 1; stroke-dashoffset: 0; }
+  .loop__node { color: #61d6d6; }
+  .hero__logo { animation: none; }
+  .wordmark { color: var(--t-c); text-shadow: none; }
+  .caret { opacity: 1; }
+}
