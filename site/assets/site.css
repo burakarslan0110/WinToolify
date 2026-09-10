@@ -950,6 +950,13 @@ body::before {
    halfway up the section with nothing under it. */
 /* One block per row, each with its explanation beside its command, rather than
    three narrow columns that squeeze both. */
+.start__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
 .start {
   display: grid;
   gap: 12px;
@@ -1101,11 +1108,14 @@ pre.code .t-d { color: var(--ink-3); }
 .maker__links a { padding-block: 4px; }
 
 .foot {
+  position: relative;
+  overflow: hidden;
   padding: 48px 0 64px;
   border-top: 1px solid var(--line);
   color: var(--ink-3);
   font-size: 14px;
 }
+
 .foot__in {
   display: flex;
   flex-wrap: wrap;
