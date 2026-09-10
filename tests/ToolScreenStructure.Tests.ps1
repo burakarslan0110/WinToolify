@@ -264,6 +264,12 @@ Describe 'Tool screen contracts' {
                 cycle safety. -StopAt names a function to record but not
                 expand further, for a shared boundary whose internals are
                 out of scope for a particular scan.
+                Descends only into functions WinToolify defines. Windows'
+                own script-backed commands resolve as Function too
+                (Get-PhysicalDisk among them), and their bodies differ
+                between Windows builds, so a function a module owns is
+                recorded at its call site and judged by its own name
+                rather than walked into.
             #>
             param(
                 [Parameter(Mandatory)][scriptblock]$Action,
@@ -281,6 +287,7 @@ Describe 'Tool screen contracts' {
                 if (-not $Visited.Add($name)) { continue }
                 $resolved = Get-Command -Name $name -ErrorAction SilentlyContinue
                 if (-not $resolved -or $resolved.CommandType -ne 'Function') { continue }
+                if ($resolved.ModuleName) { continue }
                 $result.AddRange(@(Get-WtReachableCommands -Action $resolved.ScriptBlock -OriginName $name -StopAt $StopAt -Visited $Visited))
             }
             return $result
@@ -301,7 +308,7 @@ Describe 'Tool screen contracts' {
         }
 
         $script:StructurallyHarmlessCommands = @(
-            'New-Object', 'New-CimSession', 'New-WtListItem', 'New-WtSeg',
+            'New-Object', 'New-WtListItem', 'New-WtSeg',
             'Set-WtSelectionToggle', 'Set-WtRadioSelection', 'Clear-Host', 'Clear-WtPendingInput'
         )
     }
@@ -329,6 +336,29 @@ Describe 'Tool screen contracts' {
 
         function Test-WtFakeGatedHelper { Confirm-WtDestructiveAction -Consequence 'x' -Lines @() }
         Test-WtActionRowIsGated -Action { Test-WtFakeGatedHelper } | Should -BeTrue
+    }
+
+    It 'records a call into a Windows module by name but never audits that module function from the inside' {
+        <#
+            Get-PhysicalDisk and friends are script-backed module
+            functions, so Get-Command resolves them as Function and the
+            walk used to descend into Microsoft's implementation - a body
+            that differs per Windows build, so the read-only scan below
+            passed on one image and failed on another. The walk stops at
+            WinToolify's own code; an external command is still recorded
+            at its call site and judged by its own name. Probed with a
+            module defined right here, so the boundary is proven without
+            depending on what any particular Windows build ships.
+        #>
+        $probe = New-Module -Name 'WtBoundaryProbe' -ScriptBlock {
+            function Get-WtBoundaryProbeDisk { Remove-Item -Path 'C:\not-wintoolify-code' -Force }
+            Export-ModuleMember -Function 'Get-WtBoundaryProbeDisk'
+        } | Import-Module -PassThru
+        try {
+            $reach = @(Get-WtReachableCommands -Action { Get-WtBoundaryProbeDisk })
+            @($reach | Where-Object { $_.Command.GetCommandName() -eq 'Get-WtBoundaryProbeDisk' }).Count | Should -Be 1 -Because 'the call itself still has to be recorded'
+            @($reach | Where-Object { $_.Origin -eq 'Get-WtBoundaryProbeDisk' }).Count | Should -Be 0 -Because 'a module function body is not WinToolify code to audit'
+        } finally { Remove-Module -ModuleInfo $probe -Force }
     }
 
     It 'never lets a captured action reach Read-Host through its call graph - it would deadlock behind the capture' {
