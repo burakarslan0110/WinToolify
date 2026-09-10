@@ -1,0 +1,75 @@
+name: CI
+
+# Every commit and every merge on a working branch is tested here. main is
+# excluded on purpose: a push to main is a merged pull request, and the
+# release workflow runs these same checks before it publishes anything.
+on:
+  push:
+    branches-ignore: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Nothing here writes to the repository.
+permissions:
+  contents: read
+
+# A newer push to the same branch makes the run in flight pointless.
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    # "Build and check" is the status check main's ruleset requires (GitHub
+    # names a check run after the job, not the workflow). Renaming this job
+    # means updating the ruleset with it.
+    name: Build and check
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # -Scope CurrentUser under `shell: powershell` (Windows PowerShell 5.1)
+      # installs into Documents\WindowsPowerShell\Modules, not PowerShell 7's
+      # Documents\PowerShell\Modules. Bump the -vN suffix to force a rebuild.
+      - name: Cache PowerShell modules
+        id: psmodules
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~\Documents\WindowsPowerShell\Modules
+          key: psmodules-${{ runner.os }}-pester-5.9.1-pssa-1.25.0-v1
+
+      - name: Install Pester 5.9.1 and PSScriptAnalyzer 1.25.0
+        if: steps.psmodules.outputs.cache-hit != 'true'
+        shell: powershell
+        timeout-minutes: 10
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (-not (Get-PackageProvider -Name NuGet -ListAvailable -ErrorAction SilentlyContinue)) {
+            Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
+          }
+          Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+          Install-Module -Name Pester -RequiredVersion 5.9.1 -Scope CurrentUser -Force -SkipPublisherCheck
+          Install-Module -Name PSScriptAnalyzer -RequiredVersion 1.25.0 -Scope CurrentUser -Force
+
+      # Build src into dist/WinToolify.ps1, then parse check, then the
+      # 5.1/7.0 compatibility gate, then Pester. Any failure exits non-zero.
+      - name: Build and run every check
+        shell: powershell
+        run: |
+          & .\tools\Invoke-WtChecks.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      # dist/ is not in the repository, so this artifact is how a branch
+      # build gets downloaded and tried out before it is released.
+      - name: Upload the built script
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: WinToolify-${{ github.sha }}
+          path: dist/WinToolify.ps1
+          if-no-files-found: warn
+          retention-days: 14

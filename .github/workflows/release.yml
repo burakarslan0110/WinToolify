@@ -1,0 +1,258 @@
+name: Release
+
+# A push to main is a merged pull request - main takes nothing else. That
+# merge is what cuts a release: the checks run again here, and only a green
+# run creates the tag and publishes the asset.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Which part of the version to raise
+        type: choice
+        options: [patch, minor, major]
+        default: patch
+
+permissions:
+  contents: read
+
+# Two releases must never build at once, and a release in flight is never
+# worth cancelling.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build, check and publish
+    runs-on: windows-latest
+    timeout-minutes: 60
+    # A job-level block replaces the top-level one rather than adding to it,
+    # so every scope this job needs is listed here: contents to create the
+    # tag and the release, pull-requests to read the merged PR's release:*
+    # label, and the last two to sign the provenance attestation.
+    permissions:
+      contents: write
+      pull-requests: read
+      id-token: write
+      attestations: write
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Tags decide the next version number, so the full history is
+          # needed. The write token stays out of .git/config either way.
+          fetch-depth: 0
+          persist-credentials: false
+
+      # The version is the last vX.Y.Z tag with one part raised. Which part
+      # comes from the merged pull request's label: release:major,
+      # release:minor, neither (patch), or release:skip to merge with no
+      # release at all.
+      - name: Work out the next version
+        id: version
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          DISPATCH_BUMP: ${{ inputs.bump }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          $bump = 'patch'
+          $skip = $false
+          if ($env:DISPATCH_BUMP) {
+            $bump = $env:DISPATCH_BUMP
+            Write-Host "Run started by hand: $bump release."
+          }
+          else {
+            $labels = @(& gh api "repos/$env:REPO/commits/$env:SHA/pulls" --jq '.[].labels[].name')
+            if ($LASTEXITCODE -ne 0) {
+              Write-Host 'No pull request found for this commit - treating it as a patch release.'
+              $labels = @()
+            }
+            if     ($labels -contains 'release:skip')  { $skip = $true }
+            elseif ($labels -contains 'release:major') { $bump = 'major' }
+            elseif ($labels -contains 'release:minor') { $bump = 'minor' }
+            Write-Host ("Pull request labels: " + $(if ($labels.Count) { $labels -join ', ' } else { '(none)' }))
+          }
+
+          # Re-running a push that already released must not cut a second
+          # release from the same commit. A run started by hand is the
+          # deliberate exception - the escape hatch when one has to be redone.
+          if (-not $skip -and -not $env:DISPATCH_BUMP) {
+            $already = @(& git tag --points-at $env:SHA)
+            if ($already.Count -gt 0) {
+              Write-Host "This commit is already released as $($already -join ', ') - running the checks only."
+              $skip = $true
+            }
+          }
+
+          # Prereleases and anything else that is not vMAJOR.MINOR.PATCH are
+          # skipped: the number is raised from the last real release.
+          $latest = $null
+          foreach ($tag in @(& git tag --list 'v*' --sort=-v:refname)) {
+            if ($tag -match '^v(\d+)\.(\d+)\.(\d+)$') { $latest = $tag; break }
+          }
+
+          if (-not $latest) {
+            $next = 'v2.0.0'
+            Write-Host "No release tag yet - the first one is $next."
+          }
+          else {
+            [void]($latest -match '^v(\d+)\.(\d+)\.(\d+)$')
+            $major = [int]$Matches[1]
+            $minor = [int]$Matches[2]
+            $patch = [int]$Matches[3]
+            switch ($bump) {
+              'major' { $major++; $minor = 0; $patch = 0 }
+              'minor' { $minor++; $patch = 0 }
+              default { $patch++ }
+            }
+            $next = "v$major.$minor.$patch"
+            Write-Host "$latest + $bump -> $next"
+          }
+
+          if (-not $skip -and @(& git tag --list $next).Count -gt 0) {
+            Write-Host "Tag $next already exists - refusing to release over it."
+            exit 1
+          }
+
+          "version=$next" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding ascii
+          # Empty on the very first release. The publish step needs it to ask
+          # GitHub for the notes since that tag rather than since the first
+          # commit in the repository.
+          "previous=$latest" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding ascii
+          "skip=$($skip.ToString().ToLowerInvariant())" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding ascii
+
+          $summary = if ($skip) { "Nothing published for this commit - checks only." } else { "Releasing $next" }
+          $summary | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+
+      - name: Cache PowerShell modules
+        id: psmodules
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~\Documents\WindowsPowerShell\Modules
+          key: psmodules-${{ runner.os }}-pester-5.9.1-pssa-1.25.0-v1
+
+      - name: Install Pester 5.9.1 and PSScriptAnalyzer 1.25.0
+        if: steps.psmodules.outputs.cache-hit != 'true'
+        shell: powershell
+        timeout-minutes: 10
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (-not (Get-PackageProvider -Name NuGet -ListAvailable -ErrorAction SilentlyContinue)) {
+            Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
+          }
+          Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+          Install-Module -Name Pester -RequiredVersion 5.9.1 -Scope CurrentUser -Force -SkipPublisherCheck
+          Install-Module -Name PSScriptAnalyzer -RequiredVersion 1.25.0 -Scope CurrentUser -Force
+
+      # The gate. The version is stamped into the built script's header, so
+      # the file that ships is the one these checks ran against. A failure
+      # here ends the job: no tag, no release.
+      - name: Build with the new version and run every check
+        shell: powershell
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          & .\tools\Invoke-WtChecks.ps1 -Version $env:VERSION
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Produce the SHA256 checksum file
+        id: hash
+        if: steps.version.outputs.skip != 'true'
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $sha = (Get-FileHash -LiteralPath 'dist/WinToolify.ps1' -Algorithm SHA256).Hash.ToLowerInvariant()
+          [System.IO.File]::WriteAllText(
+            (Join-Path $PWD 'dist\WinToolify.ps1.sha256'),
+            "$sha  WinToolify.ps1`n",
+            (New-Object System.Text.ASCIIEncoding))
+          "sha256=$sha" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding ascii
+
+      # Records, signed and publicly verifiable, that this exact file came
+      # out of this workflow at this commit.
+      - name: Attest build provenance
+        if: steps.version.outputs.skip != 'true'
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: dist/WinToolify.ps1
+
+      # gh release create makes the tag as well, so the tag only ever exists
+      # for a build that passed. Release notes are GitHub's own summary of
+      # the pull requests merged since the last tag.
+      - name: Publish the release
+        if: steps.version.outputs.skip != 'true'
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          TAG: ${{ steps.version.outputs.version }}
+          PREVIOUS: ${{ steps.version.outputs.previous }}
+          SHA256: ${{ steps.hash.outputs.sha256 }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          if ($env:PREVIOUS) {
+            $notes = & gh api "repos/$env:REPO/releases/generate-notes" -X POST `
+              -f tag_name=$env:TAG -f target_commitish=$env:SHA `
+              -f previous_tag_name=$env:PREVIOUS --jq '.body'
+            if ($LASTEXITCODE -ne 0 -or -not $notes) {
+              Write-Host 'Could not generate release notes - publishing with a plain body.'
+              $notes = "WinToolify $env:TAG"
+            }
+          }
+          else {
+            # No earlier tag to measure against: generated notes would be
+            # every commit the repository has ever had.
+            $notes = "First release of the rebuilt WinToolify V2."
+          }
+
+          $verify = @(
+            '',
+            '---',
+            '',
+            '### Verify this download',
+            '',
+            '```powershell',
+            '(Get-FileHash .\WinToolify.ps1 -Algorithm SHA256).Hash.ToLower()',
+            "# $env:SHA256",
+            '```',
+            '',
+            'The asset carries a signed build provenance attestation:',
+            '',
+            '```powershell',
+            "gh attestation verify .\WinToolify.ps1 --repo $env:REPO",
+            '```'
+          ) -join "`n"
+
+          $body = ($notes -join "`n") + "`n" + $verify
+          [System.IO.File]::WriteAllText(
+            (Join-Path $PWD 'dist\RELEASE_NOTES.md'),
+            $body,
+            (New-Object System.Text.UTF8Encoding $false))
+
+          & gh release create $env:TAG `
+            'dist/WinToolify.ps1' 'dist/WinToolify.ps1.sha256' `
+            --target $env:SHA `
+            --title "WinToolify $env:TAG" `
+            --notes-file 'dist/RELEASE_NOTES.md'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          "Published https://github.com/$env:REPO/releases/tag/$env:TAG" |
+            Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+
+      # On a release:skip run this is the only copy of what was built.
+      - name: Upload the built script
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: WinToolify-${{ github.sha }}
+          path: dist/WinToolify.ps1
+          if-no-files-found: warn
+          retention-days: 14
