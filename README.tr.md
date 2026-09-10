@@ -13,8 +13,11 @@ WinToolify, Windows 10 ve 11'de insanların tek tek farklı kaynaklardan düzenl
 ![Windows 10 ve 11](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4)
 ![Windows PowerShell 5.1](https://img.shields.io/badge/PowerShell-5.1%2B-5391FE)
 ![Diller: EN ve TR](https://img.shields.io/badge/Aray%C3%BCz-English%20%7C%20T%C3%BCrk%C3%A7e-lightgrey)
+[![Qwen desteğiyle geliştirildi](https://img.shields.io/badge/Geli%C5%9Ftirme%20deste%C4%9Fi-Qwen-082DFF)](https://qwen.ai)
 
-English: [README.md](README.md) · Site ve dokümanlar: [burakarslan0110.github.io/WinToolify](https://burakarslan0110.github.io/WinToolify/tr/)
+<img src="site/assets/qwen/qwen-mark.svg" alt="" height="16" /> [Qwen](https://qwen.ai) dil modellerinin desteğiyle geliştirildi.
+
+English: [README.md](README.md) · Site ve dokümanlar: [wintoolify.app](https://wintoolify.app/tr/)
 
 <p align="center">
   <img src="site/assets/wintoolify-tour-tr-1920x1080.gif" width="900" alt="WinToolify çalışırken: Windows Servis Yönetimi ekranında iki servis sırayla işaretlenip uygulanıyor, ikisi de çalışır durumdan durdurulmuş ve devre dışına geçiyor. Gizlilik ve Telemetri ekranında üç ayar birer birer işaretlenip birlikte uygulanıyor. Son Değişikliği Geri Al ekranı da bu iki işlemi kayıt olarak tutuyor. Kayıt asistanla bitiyor: son mavi ekranın sebebi soruluyor, asistan çökme konusunu okuyor, web'de arama yapıyor, Microsoft'un o durdurma koduna ayırdığı sayfayı okuyor ve uygun raporu bir numaralı öneri olarak sunuyor." />
@@ -95,6 +98,23 @@ Asistan, OpenAI uyumlu her uç noktayla konuşan bir konsol sohbet kabuğudur, y
 ## Arayüz nasıl çalışır
 
 Her ekran aynı listedir. Ok tuşları gezinir, `Enter` açar veya çalıştırır, `Esc` geri döner. Windows'u değiştiren ekranlar iki adımda ilerler. `Space` bir satırı işaretler, `Enter` işaretlenen her şeyi uygular, yani menüde gezinmekle hiçbir şey uygulanmaz. Her satır bir risk etiketi taşır. `SAFE` uyarı istemez, `CAUTION` neyin değişeceğini söyler, `ADVANCED` sonucu açık açık yazar ve onaylamak için bir kelime yazmanı ister.
+
+## Qwen ile geliştirildi
+
+<a href="https://qwen.ai"><img src="site/assets/qwen/capybara-coder.png" align="right" width="220" alt="Başında coder yazan bir bant takmış Qwen kapibarası, ekranında Qwen logosu olan bir bilgisayarda kod yazıyor" /></a>
+
+<a href="https://qwen.ai">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="site/assets/qwen/qwen-logo-dark.svg" />
+    <img src="site/assets/qwen/qwen-logo.svg" alt="Qwen" height="36" />
+  </picture>
+</a>
+
+WinToolify, Alibaba'nın Qwen ekibinden çıkan [Qwen](https://qwen.ai) dil modellerinin desteğiyle geliştirildi.
+
+Asistan Qwen modellerini de kullanabilir. Kendi makinende Ollama ya da LM Studio ile sunulan bir Qwen modeline de, uzakta barındırılan bir Qwen modeline de OpenAI uyumlu diğer uç noktalar gibi bağlanır. `/model` komutunun yardım metni örnek olarak `qwen3` gösterir. [wintoolify.app](https://wintoolify.app/tr/) sayfasının başındaki kayıtta da asistan Qwen3.8-Max ile çalışıyor.
+
+Qwen açık modellerini [GitHub](https://github.com/QwenLM) ve [Hugging Face](https://huggingface.co/Qwen) üzerinde yayımlıyor.
 
 ## Depo yapısı
 

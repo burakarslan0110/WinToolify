@@ -332,6 +332,36 @@ body::before {
   line-height: 1.6;
 }
 
+/* The Qwen credit, one line under the note in the same pill shape as the step
+   buttons under the window, and a jump to the section that says more. The mark
+   sits on a white disc so the brand blue does not sink into the dark page. */
+.hero__built { margin-top: 22px; }
+.built {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  padding: 6px 16px 6px 7px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: var(--bg-1);
+  color: var(--ink-2);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: left;
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+.built:hover { color: var(--ink); border-color: var(--ink-3); text-decoration: none; }
+.built img {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  padding: 4px;
+  border-radius: 50%;
+  background: #fff;
+}
+
 /* ----------------------------------------------------------- terminal --- */
 
 .term {
@@ -944,12 +974,57 @@ body::before {
 
 .harness__term { margin-top: 44px; }
 
+/* --------------------------------------------------------------- qwen --- */
+
+.qwen {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+}
+
+.qwen__logo { display: inline-block; margin-bottom: 26px; }
+.qwen__logo img { display: block; width: auto; height: 34px; }
+
+.qwen__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin-top: 26px;
+  font-size: 15px;
+}
+/* Same pixel as the footer links: 24px of target height at this size. */
+.qwen__links a { padding-block: 4px; }
+
+/* The artwork is drawn on black, so it gets the terminals' frame and reads as
+   another window lying on the page. */
+.qwen__art { margin: 0; }
+.qwen__art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line-2);
+  border-radius: 16px;
+  background: #000;
+}
+
 /* --------------------------------------------------------------- start --- */
 
 /* Six equal blocks rather than two stacks of uneven length, so no column ends
    halfway up the section with nothing under it. */
 /* One block per row, each with its explanation beside its command, rather than
    three narrow columns that squeeze both. */
+/* The Qwen capybara gives the OK beside the heading. It is decoration, so it
+   has no alt text, and on a phone it shrinks rather than pushing the heading
+   onto more lines. */
+.start__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+.start__mascot { flex: none; width: clamp(76px, 11vw, 128px); height: auto; }
+
 .start {
   display: grid;
   gap: 12px;
@@ -1101,10 +1176,28 @@ pre.code .t-d { color: var(--ink-3); }
 .maker__links a { padding-block: 4px; }
 
 .foot {
+  position: relative;
+  overflow: hidden;
   padding: 48px 0 64px;
   border-top: 1px solid var(--line);
   color: var(--ink-3);
   font-size: 14px;
+}
+
+/* The Qwen capybara waves from behind the right edge of the window. The wall
+   it leans on is drawn 5% in from the image's right side, so pulling the image
+   out by that much puts the wall flush with the edge of the page. The drawing
+   stops mid-body, so its lower third fades out instead of ending in a cut. */
+.foot__peek {
+  --peek: clamp(84px, 10vw, 128px);
+  position: absolute;
+  top: 28px;
+  right: calc(var(--peek) * -0.05);
+  width: var(--peek);
+  height: auto;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 96%);
+  mask-image: linear-gradient(to bottom, #000 62%, transparent 96%);
 }
 .foot__in {
   display: flex;
@@ -1141,7 +1234,8 @@ pre.code .t-d { color: var(--ink-3); }
 /* ---------------------------------------------------------- responsive --- */
 
 @media (max-width: 940px) {
-  .tour__layout, .harness__grid, .harness__head { grid-template-columns: minmax(0, 1fr); }
+  .tour__layout, .harness__grid, .harness__head, .qwen { grid-template-columns: minmax(0, 1fr); }
+  .qwen__art { max-width: 360px; }
   .start__block { grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: stretch; }
   .harness__claims { justify-content: flex-start; }
   .loop { max-width: 340px; margin-inline: auto; }

@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WinToolify · Windows Management Harness</title>
 <meta name="description" content="Windows ayarlarını, servislerini, uygulamalarını ve onarım komutlarını tek bir klavyeyle gezilen terminale toplayan, her değişikliği geri alınabilir şekilde kaydeden ve bir yapay zeka asistanının aynı kataloğu okumasına izin veren tek bir PowerShell betiği.">
-<link rel="canonical" href="https://burakarslan0110.github.io/WinToolify/tr/">
-<link rel="alternate" hreflang="en" href="https://burakarslan0110.github.io/WinToolify/">
-<link rel="alternate" hreflang="tr" href="https://burakarslan0110.github.io/WinToolify/tr/">
-<link rel="alternate" hreflang="x-default" href="https://burakarslan0110.github.io/WinToolify/">
+<link rel="canonical" href="https://wintoolify.app/tr/">
+<link rel="alternate" hreflang="en" href="https://wintoolify.app/">
+<link rel="alternate" hreflang="tr" href="https://wintoolify.app/tr/">
+<link rel="alternate" hreflang="x-default" href="https://wintoolify.app/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="WinToolify · Windows Management Harness">
 <meta property="og:description" content="Windows ayarları, servisleri, uygulamaları ve onarım komutları tek bir klavyeyle gezilen terminalde. Her değişiklik geri alınabilir. Kataloğu okuyabilen ama hiçbir şeyi uygulayamayan bir yapay zeka asistanı.">
-<meta property="og:url" content="https://burakarslan0110.github.io/WinToolify/tr/">
-<meta property="og:image" content="https://burakarslan0110.github.io/WinToolify/assets/og.png">
+<meta property="og:url" content="https://wintoolify.app/tr/">
+<meta property="og:image" content="https://wintoolify.app/assets/og.png">
 <meta property="og:locale" content="tr_TR">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#08090b">
@@ -36,6 +36,7 @@
 <a href="#tour">Arayüz</a>
       <a href="#menus">Menüler</a>
       <a href="#harness">Asistan</a>
+      <a href="#qwen">Qwen</a>
       <a href="#safety">Güvenlik</a>
       <a href="#start">Başlarken</a>
     </nav>
@@ -63,12 +64,14 @@
 
     <div class="hero__cta">
       <p class="cmd">
-        <code id="cmd-run"><b>irm</b> https://github.com/burakarslan0110/WinToolify/releases/latest/download/WinToolify.ps1 <b>| iex</b></code>
-        <button class="copy" type="button" data-copy="cmd-run" data-done="Kopyalandı">Kopyala</button>
+        <code id="cmd-run-hero"><b>irm</b> https://github.com/burakarslan0110/WinToolify/releases/latest/download/WinToolify.ps1 <b>| iex</b></code>
+        <button class="copy" type="button" data-copy="cmd-run-hero" data-done="Kopyalandı">Kopyala</button>
       </p>
     </div>
 
     <p class="hero__note">Yönetici izinleriyle çalışır.</p>
+
+    <p class="hero__built"><a class="built" href="#qwen"><img src="../assets/qwen/qwen-mark.svg" alt="" width="26" height="26">Qwen dil modellerinin desteğiyle geliştirildi</a></p>
   </div>
 
   <div class="shell hero__term">
@@ -1278,6 +1281,31 @@
   </div>
 </section>
 
+<!-- ------------------------------------------------------------- qwen --- -->
+
+<section class="section" id="qwen">
+  <div class="shell qwen reveal">
+    <div>
+      <a class="qwen__logo" href="https://qwen.ai"><img src="../assets/qwen/qwen-logo-dark.svg" alt="Qwen" width="127" height="34"></a>
+      <h2>Qwen ile geliştirildi</h2>
+      <p class="section__deck">
+        WinToolify, Alibaba'nın Qwen ekibinden çıkan Qwen dil modellerinin desteğiyle geliştirildi.
+      </p>
+      <p class="section__deck">
+        Asistan Qwen modellerini de kullanabilir. Kendi makinenizde Ollama ya da LM Studio ile sunulan bir Qwen modeline de, uzakta barındırılan bir Qwen modeline de OpenAI uyumlu diğer uç noktalar gibi bağlanır. Sayfanın başındaki kayıtta asistan Qwen3.8-Max ile çalışıyor.
+      </p>
+      <p class="qwen__links">
+        <a href="https://qwen.ai">qwen.ai</a>
+        <a href="https://github.com/QwenLM">GitHub'da QwenLM</a>
+        <a href="https://huggingface.co/Qwen">Hugging Face'te Qwen</a>
+      </p>
+    </div>
+    <figure class="qwen__art">
+      <img src="../assets/qwen/capybara-star.png" alt="Qwen'in kapibara maskotu, yıldızlarla dolu bir gece gökyüzünün altında parlayan Qwen logosunu tutuyor." width="852" height="851" loading="lazy" decoding="async">
+    </figure>
+  </div>
+</section>
+
 <!-- ----------------------------------------------------------- safety --- -->
 
 <section class="section" id="safety">
@@ -1362,9 +1390,12 @@
 
 <section class="section" id="start">
   <div class="shell">
-    <div class="reveal">
-      <p class="kicker">Başlarken</p>
-      <h2>Nasıl çalıştırılır?</h2>
+    <div class="start__head reveal">
+      <div>
+        <p class="kicker">Başlarken</p>
+        <h2>Nasıl çalıştırılır?</h2>
+      </div>
+      <img class="start__mascot" src="../assets/qwen/capybara-ok.png" alt="" width="301" height="331" loading="lazy" decoding="async">
     </div>
 
     <div class="start stagger reveal">
@@ -1436,6 +1467,7 @@ gh attestation verify .\WinToolify.ps1 --repo burakarslan0110/WinToolify</pre>
 </main>
 
 <footer class="foot">
+  <img class="foot__peek" src="../assets/qwen/capybara-wave.png" alt="" width="240" height="240" loading="lazy" decoding="async">
   <div class="shell maker">
     <img class="maker__photo" src="../assets/burak.jpg" alt="Burak Arslan" width="76" height="76" loading="lazy" decoding="async">
     <p class="maker__name">Geliştiren Burak Arslan</p>

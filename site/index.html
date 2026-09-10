@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WinToolify · Windows Management Harness</title>
 <meta name="description" content="One PowerShell script that puts Windows settings, services, apps and repair commands on a single keyboard-driven terminal, records every change so you can put it back, and lets an AI assistant read the same catalogue without applying anything by itself.">
-<link rel="canonical" href="https://burakarslan0110.github.io/WinToolify/">
-<link rel="alternate" hreflang="en" href="https://burakarslan0110.github.io/WinToolify/">
-<link rel="alternate" hreflang="tr" href="https://burakarslan0110.github.io/WinToolify/tr/">
-<link rel="alternate" hreflang="x-default" href="https://burakarslan0110.github.io/WinToolify/">
+<link rel="canonical" href="https://wintoolify.app/">
+<link rel="alternate" hreflang="en" href="https://wintoolify.app/">
+<link rel="alternate" hreflang="tr" href="https://wintoolify.app/tr/">
+<link rel="alternate" hreflang="x-default" href="https://wintoolify.app/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="WinToolify · Windows Management Harness">
 <meta property="og:description" content="Windows settings, services, apps and repair commands on one keyboard-driven terminal. Every change reversible. An AI assistant that can read the catalogue but never apply anything.">
-<meta property="og:url" content="https://burakarslan0110.github.io/WinToolify/">
-<meta property="og:image" content="https://burakarslan0110.github.io/WinToolify/assets/og.png">
+<meta property="og:url" content="https://wintoolify.app/">
+<meta property="og:image" content="https://wintoolify.app/assets/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#08090b">
 <link rel="icon" href="assets/logo-64.png" type="image/png" sizes="64x64">
@@ -35,6 +35,7 @@
 <a href="#tour">Interface</a>
       <a href="#menus">Menus</a>
       <a href="#harness">Assistant</a>
+      <a href="#qwen">Qwen</a>
       <a href="#safety">Safety</a>
       <a href="#start">Get started</a>
     </nav>
@@ -62,12 +63,14 @@
 
     <div class="hero__cta">
       <p class="cmd">
-        <code id="cmd-run"><b>irm</b> https://github.com/burakarslan0110/WinToolify/releases/latest/download/WinToolify.ps1 <b>| iex</b></code>
-        <button class="copy" type="button" data-copy="cmd-run" data-done="Copied">Copy</button>
+        <code id="cmd-run-hero"><b>irm</b> https://github.com/burakarslan0110/WinToolify/releases/latest/download/WinToolify.ps1 <b>| iex</b></code>
+        <button class="copy" type="button" data-copy="cmd-run-hero" data-done="Copied">Copy</button>
       </p>
     </div>
 
     <p class="hero__note">Runs with administrator rights.</p>
+
+    <p class="hero__built"><a class="built" href="#qwen"><img src="assets/qwen/qwen-mark.svg" alt="" width="26" height="26">Developed with the support of Qwen language models</a></p>
   </div>
 
   <div class="shell hero__term">
@@ -1277,6 +1280,31 @@
   </div>
 </section>
 
+<!-- ------------------------------------------------------------- qwen --- -->
+
+<section class="section" id="qwen">
+  <div class="shell qwen reveal">
+    <div>
+      <a class="qwen__logo" href="https://qwen.ai"><img src="assets/qwen/qwen-logo-dark.svg" alt="Qwen" width="127" height="34"></a>
+      <h2>Built with Qwen</h2>
+      <p class="section__deck">
+        WinToolify was developed with the support of Qwen language models, made by Alibaba's Qwen team.
+      </p>
+      <p class="section__deck">
+        The assistant can run on Qwen as well. A Qwen model served by Ollama or LM Studio on your own machine works like any other OpenAI-compatible endpoint, and so does a hosted one. In the recording at the top of this page, the assistant is running Qwen3.8-Max.
+      </p>
+      <p class="qwen__links">
+        <a href="https://qwen.ai">qwen.ai</a>
+        <a href="https://github.com/QwenLM">QwenLM on GitHub</a>
+        <a href="https://huggingface.co/Qwen">Qwen on Hugging Face</a>
+      </p>
+    </div>
+    <figure class="qwen__art">
+      <img src="assets/qwen/capybara-star.png" alt="Qwen's capybara mascot holding a glowing Qwen logo under a night sky full of stars." width="852" height="851" loading="lazy" decoding="async">
+    </figure>
+  </div>
+</section>
+
 <!-- ----------------------------------------------------------- safety --- -->
 
 <section class="section" id="safety">
@@ -1362,9 +1390,12 @@
 
 <section class="section" id="start">
   <div class="shell">
-    <div class="reveal">
-      <p class="kicker">Get started</p>
-      <h2>How do you run it?</h2>
+    <div class="start__head reveal">
+      <div>
+        <p class="kicker">Get started</p>
+        <h2>How do you run it?</h2>
+      </div>
+      <img class="start__mascot" src="assets/qwen/capybara-ok.png" alt="" width="301" height="331" loading="lazy" decoding="async">
     </div>
 
     <div class="start stagger reveal">
@@ -1436,6 +1467,7 @@ gh attestation verify .\WinToolify.ps1 --repo burakarslan0110/WinToolify</pre>
 </main>
 
 <footer class="foot">
+  <img class="foot__peek" src="assets/qwen/capybara-wave.png" alt="" width="240" height="240" loading="lazy" decoding="async">
   <div class="shell maker">
     <img class="maker__photo" src="assets/burak.jpg" alt="Burak Arslan" width="76" height="76" loading="lazy" decoding="async">
     <p class="maker__name">Built by Burak Arslan</p>

@@ -13,8 +13,11 @@ WinToolify is a comprehensive PowerShell script that brings together the setting
 ![Windows 10 and 11](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4)
 ![Windows PowerShell 5.1](https://img.shields.io/badge/PowerShell-5.1%2B-5391FE)
 ![Languages: EN and TR](https://img.shields.io/badge/UI-English%20%7C%20T%C3%BCrk%C3%A7e-lightgrey)
+[![Built with Qwen](https://img.shields.io/badge/Built%20with-Qwen-082DFF)](https://qwen.ai)
 
-Türkçe: [README.tr.md](README.tr.md) · Site and docs: [burakarslan0110.github.io/WinToolify](https://burakarslan0110.github.io/WinToolify/)
+<img src="site/assets/qwen/qwen-mark.svg" alt="" height="16" /> Developed with the support of [Qwen](https://qwen.ai) language models.
+
+Türkçe: [README.tr.md](README.tr.md) · Site and docs: [wintoolify.app](https://wintoolify.app/)
 
 <p align="center">
   <img src="site/assets/wintoolify-tour-en-1920x1080.gif" width="900" alt="WinToolify running: on the Windows Services screen two services are marked in turn and applied, and both go from running to stopped and disabled. On the Privacy and Telemetry screen three settings are marked one at a time and applied together. The Undo Last Change screen then holds both applies as records. It ends in the assistant, which is asked what caused the last blue screen, reads the crash topic, searches the web, reads Microsoft's page on the stop code, and offers the matching report as suggestion one." />
@@ -95,6 +98,23 @@ The assistant is a console chat harness that talks to any OpenAI-compatible endp
 ## How it works
 
 Every screen is the same list: arrows move, `Enter` opens or runs, `Esc` goes back. Screens that change something in Windows work in two steps, `Space` marks a row and `Enter` applies everything marked, so nothing gets applied just by wandering through a menu. Each row carries a risk tag: `SAFE` needs no warning, `CAUTION` says what changes, and `ADVANCED` spells out the consequence and asks you to type a word to confirm it.
+
+## Built with Qwen
+
+<a href="https://qwen.ai"><img src="site/assets/qwen/capybara-coder.png" align="right" width="220" alt="Qwen's capybara mascot in a headband that reads coder, typing at a computer with the Qwen logo on its screen" /></a>
+
+<a href="https://qwen.ai">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="site/assets/qwen/qwen-logo-dark.svg" />
+    <img src="site/assets/qwen/qwen-logo.svg" alt="Qwen" height="36" />
+  </picture>
+</a>
+
+WinToolify was developed with the support of [Qwen](https://qwen.ai) language models, made by Alibaba's Qwen team.
+
+The assistant can run on Qwen as well. A Qwen model served by Ollama or LM Studio on your own machine works like any other OpenAI-compatible endpoint, and so does a hosted one. The help for `/model` uses `qwen3` as its example, and the recording at the top of [wintoolify.app](https://wintoolify.app/) shows the assistant running Qwen3.8-Max.
+
+Qwen publishes its open models on [GitHub](https://github.com/QwenLM) and [Hugging Face](https://huggingface.co/Qwen).
 
 ## Repository layout
 
