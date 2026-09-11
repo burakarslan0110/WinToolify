@@ -14,7 +14,7 @@ WinToolify, Windows 10 ve 11'de insanların tek tek farklı kaynaklardan düzenl
 ![Windows PowerShell 5.1](https://img.shields.io/badge/PowerShell-5.1%2B-5391FE)
 ![Diller: EN ve TR](https://img.shields.io/badge/Aray%C3%BCz-English%20%7C%20T%C3%BCrk%C3%A7e-lightgrey)
 
-English: [README.md](README.md) · Site ve dokümanlar: [burakarslan0110.github.io/WinToolify](https://burakarslan0110.github.io/WinToolify/tr/)
+English: [README.md](README.md) · Site ve dokümanlar: [wintoolify.app](https://wintoolify.app/tr/)
 
 <p align="center">
   <img src="site/assets/wintoolify-tour-tr-1920x1080.gif" width="900" alt="WinToolify çalışırken: Windows Servis Yönetimi ekranında iki servis sırayla işaretlenip uygulanıyor, ikisi de çalışır durumdan durdurulmuş ve devre dışına geçiyor. Gizlilik ve Telemetri ekranında üç ayar birer birer işaretlenip birlikte uygulanıyor. Son Değişikliği Geri Al ekranı da bu iki işlemi kayıt olarak tutuyor. Kayıt asistanla bitiyor: son mavi ekranın sebebi soruluyor, asistan çökme konusunu okuyor, web'de arama yapıyor, Microsoft'un o durdurma koduna ayırdığı sayfayı okuyor ve uygun raporu bir numaralı öneri olarak sunuyor." />

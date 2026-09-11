@@ -14,7 +14,7 @@ WinToolify is a comprehensive PowerShell script that brings together the setting
 ![Windows PowerShell 5.1](https://img.shields.io/badge/PowerShell-5.1%2B-5391FE)
 ![Languages: EN and TR](https://img.shields.io/badge/UI-English%20%7C%20T%C3%BCrk%C3%A7e-lightgrey)
 
-Türkçe: [README.tr.md](README.tr.md) · Site and docs: [burakarslan0110.github.io/WinToolify](https://burakarslan0110.github.io/WinToolify/)
+Türkçe: [README.tr.md](README.tr.md) · Site and docs: [wintoolify.app](https://wintoolify.app/)
 
 <p align="center">
   <img src="site/assets/wintoolify-tour-en-1920x1080.gif" width="900" alt="WinToolify running: on the Windows Services screen two services are marked in turn and applied, and both go from running to stopped and disabled. On the Privacy and Telemetry screen three settings are marked one at a time and applied together. The Undo Last Change screen then holds both applies as records. It ends in the assistant, which is asked what caused the last blue screen, reads the crash topic, searches the web, reads Microsoft's page on the stop code, and offers the matching report as suggestion one." />
